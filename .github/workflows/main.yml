@@ -1,0 +1,32 @@
+name: Java CI with Maven
+
+# Định nghĩa các sự kiện kích hoạt workflow
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Định nghĩa các công việc (jobs) cần thực hiện
+jobs:
+  build:
+    # Môi trường hệ điều hành để chạy job này
+    runs-on: ubuntu-latest
+
+    # Các bước thực hiện tuần tự trong job
+    steps:
+    # Bước 1: Lấy mã nguồn từ repository về môi trường chạy
+    - name: Checkout mã nguồn
+      uses: actions/checkout@v4
+
+    # Bước 2: Cài đặt môi trường Java (JDK)
+    - name: Thiết lập JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    # Bước 3: Chạy lệnh build và test dự án bằng Maven
+    - name: Build dự án với Maven
+      run: mvn -B package --file pom.xml
