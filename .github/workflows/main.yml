@@ -1,32 +1,36 @@
-name: Java CI with Maven
+name: Read and Search README
 
-# Định nghĩa các sự kiện kích hoạt workflow
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      keyword:
+        description: 'Nhập từ khóa cần tìm trong file README'
+        required: true
+        default: 'Cài đặt' # Từ khóa mặc định
 
-# Định nghĩa các công việc (jobs) cần thực hiện
 jobs:
-  build:
-    # Môi trường hệ điều hành để chạy job này
+  search-file:
     runs-on: ubuntu-latest
 
-    # Các bước thực hiện tuần tự trong job
     steps:
-    # Bước 1: Lấy mã nguồn từ repository về môi trường chạy
     - name: Checkout mã nguồn
       uses: actions/checkout@v4
 
-    # Bước 2: Cài đặt môi trường Java (JDK)
-    - name: Thiết lập JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+    - name: Đọc toàn bộ nội dung README
+      run: |
+        echo "=== NỘI DUNG FILE ==="
+        cat README.md
+        echo "====================="
 
-    # Bước 3: Chạy lệnh build và test dự án bằng Maven
-    - name: Build dự án với Maven
-      run: mvn -B package --file pom.xml
+    - name: Tìm kiếm từ khóa
+      env:
+        # Lấy từ khóa người dùng nhập, nếu chạy tự động do push thì dùng chữ 'Cài đặt'
+        KEYWORD: ${{ github.event.inputs.keyword || 'Cài đặt' }}
+      run: |
+        echo "Đang tìm kiếm từ khóa: '$KEYWORD'"
+        echo "Kết quả (số dòng : nội dung):"
+        
+        # Lệnh grep dùng để tìm kiếm. Thêm '|| true' để kịch bản không bị báo lỗi (màu đỏ) nếu không tìm thấy từ khóa.
+        grep -n -i "$KEYWORD" README.md || echo "Không tìm thấy từ khóa này trong file."
