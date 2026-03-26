@@ -36,10 +36,10 @@ jobs:
         grep -n -i "$KEYWORD" README.md || echo "Không tìm thấy từ khóa này trong file."
     - name: Triển khai lên DevOps Classroom
         run: |
-          REPO="nguyenanhphu/nguyenanhphu"
+          REPO="nguyenanhphu/demogithubactionn"
           CONTAINER_PORT=80
-          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=6&container_port=$CONTAINER_PORT")
-          BODY=$(echo "$RESPONSE" | sed '$d')
+          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=4&container_port=$CONTAINER_PORT")
+          BODY=$(echo "$RESPONSE" | sed "$d")
           CODE=$(echo "$RESPONSE" | tail -n1)
           echo "Webhook HTTP: $CODE"
           if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
