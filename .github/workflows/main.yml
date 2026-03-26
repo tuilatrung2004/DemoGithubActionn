@@ -8,33 +8,31 @@ on:
       keyword:
         description: 'Nhập từ khóa cần tìm trong file README'
         required: true
-        default: 'Cài đặt' # Từ khóa mặc định
+        default: 'Cài đặt'
 
 jobs:
   search-file:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout mã nguồn
-      uses: actions/checkout@v4
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v4
 
-    - name: Đọc toàn bộ nội dung README
-      run: |
-        echo "=== NỘI DUNG FILE ==="
-        cat README.md
-        echo "====================="
+      - name: Đọc toàn bộ nội dung README
+        run: |
+          echo "=== NỘI DUNG FILE ==="
+          cat README.md
+          echo "====================="
 
-    - name: Tìm kiếm từ khóa
-      env:
-        # Lấy từ khóa người dùng nhập, nếu chạy tự động do push thì dùng chữ 'Cài đặt'
-        KEYWORD: ${{ github.event.inputs.keyword || 'Cài đặt' }}
-      run: |
-        echo "Đang tìm kiếm từ khóa: '$KEYWORD'"
-        echo "Kết quả (số dòng : nội dung):"
-        
-        # Lệnh grep dùng để tìm kiếm. Thêm '|| true' để kịch bản không bị báo lỗi (màu đỏ) nếu không tìm thấy từ khóa.
-        grep -n -i "$KEYWORD" README.md || echo "Không tìm thấy từ khóa này trong file."
-    - name: Triển khai lên DevOps Classroom
+      - name: Tìm kiếm từ khóa
+        env:
+          KEYWORD: ${{ github.event.inputs.keyword || 'Cài đặt' }}
+        run: |
+          echo "Dang tim kiem tu khoa: '$KEYWORD'"
+          echo "Kết quả (số dòng : nội dung):"
+          grep -n -i "$KEYWORD" README.md || echo "Không tìm thấy từ khóa này trong file."
+
+      - name: Triển khai lên DevOps Classroom
         run: |
           REPO="nguyenanhphu/demogithubactionn"
           CONTAINER_PORT=80
